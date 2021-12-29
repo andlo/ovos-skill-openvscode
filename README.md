@@ -1,4 +1,4 @@
-# <img src='favicon.ico' card_color='#40DBB0' width='50'/>openVSCode-Server
+# <img src='favicon.ico' card_color='#40DBB0' width='50'/> openVSCode-Server
 Run VS Code on your Mycroft device and access it in a browser.
 
 
