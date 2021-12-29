@@ -7,6 +7,7 @@ import subprocess
 import signal
 import shutil
 
+
 class OpenvscodeServer(MycroftSkill):
     def __init__(self):
         MycroftSkill.__init__(self)

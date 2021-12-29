@@ -8,7 +8,6 @@ for making skills and programs. This skill, sets everything up for you.
 openVSCode-server integrate to Github, and tools like mycroft-msm and mycroft-msk directly from the integrated 
 shell.
 
-
 ## How to install
 The skill isnt yet in the mycroft market.
 
