@@ -6,6 +6,7 @@ import os
 import subprocess
 import signal
 
+
 class OpenvscodeServer(MycroftSkill):
     def __init__(self):
         MycroftSkill.__init__(self)
