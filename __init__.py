@@ -135,26 +135,30 @@ class OpenvscodeServer(MycroftSkill):
             return False
 
     def update_vscode(self):
-        self.log.info("Checking for uptate")
-        SafePath = self.file_system.path
-        url = requests.get("https://api.github.com/repos/gitpod-io/openvscode-server/releases/latest")
-        text = url.text
-        data = json.loads(text)
-        current = self.settings.get("vscode_version")
-        new = data["name"]
-        if not current == new:
-                self.log.info("Current version is " + current)
-                self.log.info("New verson is avaible " + new)
-                self.log.info("Updating now" + new)
-                self.stop_vscode()
-                #os.remove(SafePath + '/' + 'openvscode-server')
-                #os.rm rmdir(SafePath + '/' + 'openvscode-server' + '/')
-                shutil.rmtree(SafePath + '/' + 'openvscode-server', ignore_errors=True)
-                self.settings['vscode_installed'] = False
-                self.settings['vscode_version'] = None
-                self.install_vscode()
-        else:
-            self.log.info("Alreddy at latest version which is " + current)
+        try:
+            self.log.info("Checking for uptate")
+            SafePath = self.file_system.path
+            url = requests.get("https://api.github.com/repos/gitpod-io/openvscode-server/releases/latest")
+            text = url.text
+            data = json.loads(text)
+            current = self.settings.get("vscode_version")
+            new = data["name"]
+            if not current == new:
+                    self.log.info("Current version is " + current)
+                    self.log.info("New verson is avaible " + new)
+                    self.speak_dialog('update', data={"current": current, "new": new})
+                    self.log.info("Updating now" + new)
+                    self.stop_vscode()
+                    shutil.rmtree(SafePath + '/' + 'openvscode-server', ignore_errors=True)
+                    self.settings['vscode_installed'] = False
+                    self.settings['vscode_version'] = None
+                    self.install_vscode()
+            else:
+                self.log.info("Alreddy at latest version which is " + current)
+            return True
+        except Exception:
+             return False
+
 
     def pid_exists(self, pid):
         try:
