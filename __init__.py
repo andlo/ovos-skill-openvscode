@@ -75,7 +75,7 @@ class OpenvscodeServer(MycroftSkill):
                                     auth +
                                     ' >/dev/null 2>/dev/null ',
                                     cwd=SafePath,
-                                    preexec_fn=os.setsid, shell=True)
+                                    preexec_fn=os.setsid, shell=True, executable='/bin/bash')
             self.log.info('VSCode-server PID=' + str(proc.pid))
             url = 'http://' + os.uname().nodename + ':' + str(self.settings.get('portnum')) + '?tkn=' + self.settings.get('token')
             self.log.info('To access VSCode go to ' + url)
