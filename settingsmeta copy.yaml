@@ -1,0 +1,33 @@
+
+skillMetadata:
+  sections:
+    - name: Settings 
+      fields:
+        - name: portnum
+          type: number
+          label: Portumber
+          value: "3000"
+        - name: auto_start
+          type: checkbox
+          label: Start code-server when device starts
+          value: "True"
+        - name: telemetry
+          type: checkbox
+          label: Disable telemetry
+          value: "True"
+    - name: Security
+      fields:
+        - type: label
+          label: If using SSL you can use https://device:3000. Note it is a self signed certifiate
+        - name: use_ssl
+          type: checkbox
+          label: Use SSL
+          value: "False"
+        - name: use_password
+          type: checkbox
+          label: Use Password
+          value: "False"
+        - name: password
+          type: password
+          label: Password
+          value: ""

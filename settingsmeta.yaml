@@ -1,22 +1,19 @@
 
 skillMetadata:
   sections:
-    - name: Options << Name of section
+    - name: Settings 
       fields:
-        - name: internal_python_variable_name
-          type: text
-          label: Setting Friendly Display Name
-          value: ""
-          placeholder: demo prompt in the input box
-    - name: Login << Name of another section
+        - name: portnum
+          type: number
+          label: Portumber
+          value: "3000"
+        - name: auto_start
+          type: checkbox
+          label: Start VSCode-server when device starts
+          value: "True"
+    - name: Security
       fields:
-        - type: label
-          label: Just a little bit of extra info for the user to understand following settings
-        - name: username
-          type: text
-          label: Username
-          value: ""
-        - name: password
+        - name: token
           type: password
-          label: Password
-          value: ""
+          label: Security Token
+          value: "1234"
