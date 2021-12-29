@@ -5,6 +5,8 @@ import tarfile
 import os
 import subprocess
 import signal
+import shutil
+
 
 
 class OpenvscodeServer(MycroftSkill):
@@ -21,6 +23,8 @@ class OpenvscodeServer(MycroftSkill):
         if (self.settings.get("vscode_installed") is not True or
                 self.settings.get("vscode_installed") is None):
             self.install_vscode()
+        else:
+            self.update_vscode()
         if not self.pid_exists(self.settings.get("vscode_pid")):
             self.settings["vscode_pid"] = None
         if (self.settings.get("auto_start") and
@@ -48,6 +52,11 @@ class OpenvscodeServer(MycroftSkill):
         self.stop_vscode()
         self.start_vscode()
 
+    @intent_file_handler('update.intent')
+    def handle_vscode_update(self, message):
+        self.speak_dialog('vscode_check_for_update')
+        self.update_vscode()
+
     def stop_vscode(self):
         self.log.info("Stopping openVSCode-server")
         SafePath = self.file_system.path
@@ -64,7 +73,7 @@ class OpenvscodeServer(MycroftSkill):
         return True
 
     def start_vscode(self):
-        if self.settings.get("vscode_pid)") is None:
+        if self.settings.get("vscode_pid") is None:
             self.log.info("Starting openVSCode-server")
             SafePath = self.file_system.path
             port = ' --port ' + str(self.settings.get('portnum'))
@@ -120,6 +129,28 @@ class OpenvscodeServer(MycroftSkill):
             self.settings['vscode_installed'] = False
             self.speak_dialog('installed_BAD')
             return False
+
+    def update_vscode(self):
+        self.log.info("Checking for uptate")
+        SafePath = self.file_system.path
+        url = requests.get("https://api.github.com/repos/gitpod-io/openvscode-server/releases/latest")
+        text = url.text
+        data = json.loads(text)
+        current = self.settings.get("vscode_version")
+        new = data["name"]
+        if not current == new:
+                self.log.info("Current version is " + current)
+                self.log.info("New verson is avaible " + new)
+                self.log.info("Updating now" + new)
+                self.stop_vscode()
+                #os.remove(SafePath + '/' + 'openvscode-server')
+                #os.rm rmdir(SafePath + '/' + 'openvscode-server' + '/')
+                shutil.rmtree(SafePath + '/' + 'openvscode-server', ignore_errors=True)
+                self.settings['vscode_installed'] = False
+                self.settings['vscode_version'] = None
+                self.install_vscode()
+        else:
+            self.log.info("Alreddy at latest version which is " + current)
 
     def pid_exists(self, pid):
         try:
