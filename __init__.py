@@ -7,8 +7,6 @@ import subprocess
 import signal
 import shutil
 
-
-
 class OpenvscodeServer(MycroftSkill):
     def __init__(self):
         MycroftSkill.__init__(self)
@@ -17,7 +15,7 @@ class OpenvscodeServer(MycroftSkill):
         if (self.settings.get("auto_start") is not True):
             self.settings["auto_start"] = True
         if (self.settings.get("portnum") is not True):
-            self.settings["auto_start"] = 1234
+            self.settings["portnum"] = 3000
         if (self.settings.get("token") is not True):
             self.settings["token"] = "1234"
         if (self.settings.get("vscode_installed") is not True or

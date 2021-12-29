@@ -24,6 +24,10 @@ If your Mycroft device is picroft the hostname proberly is picroft.
 
 There are some settings that kan be set on skill setting page on https://home.mycroft.ai/ 
 
+On evry devices start the skill checks for update and if here is an update it will be updated.
+
+You can force an update check and update by saying "update VS code" 
+
 
 ```
 THIRD-PARTY SOFTWARE NOTICES AND INFORMATION
