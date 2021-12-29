@@ -11,12 +11,13 @@ class OpenvscodeServer(MycroftSkill):
     def __init__(self):
         MycroftSkill.__init__(self)
 
-    @intent_file_handler('server.openvscode.intent')
-    def handle_server_openvscode(self, message):
-        self.speak_dialog('server.openvscode')
-
-
     def initialize(self):
+        if (self.settings.get("auto_start") is not True):
+            self.settings["auto_start"] = True
+        if (self.settings.get("portnum") is not True):
+            self.settings["auto_start"] = 1234
+        if (self.settings.get("token") is not True):
+            self.settings["token"] = "1234"
         if (self.settings.get("vscode_installed") is not True or
                 self.settings.get("vscode_installed") is None):
             self.install_vscode()
@@ -35,7 +36,7 @@ class OpenvscodeServer(MycroftSkill):
 
     @intent_file_handler('start.intent')
     def handle_vscode_start(self, message):
-        url = os.uname().nodename + ' ' + str(self.settings.get('portnum'))
+        url = 'http://' + os.uname().nodename + ':' + str(self.settings.get('portnum')) + '?tkn=' + self.settings.get('token')
         if self.start_vscode():
             self.speak_dialog('vscode_started', data={"url": url})
         else:
@@ -43,42 +44,41 @@ class OpenvscodeServer(MycroftSkill):
 
     @intent_file_handler('restart.intent')
     def handle_vscode_restart(self, message):
-        url = os.uname().nodename + ' ' + str(self.settings.get('portnum'))
+        url = 'http://' + os.uname().nodename + ':' + str(self.settings.get('portnum')) + '?tkn=' + self.settings.get('token')
         self.stop_vscode()
-        if self.start_vscode():
-            self.speak_dialog('code_started', data={"url": url})
+        self.start_vscode()
 
     def stop_vscode(self):
-        self.log.info("Stopping vscode")
+        self.log.info("Stopping openVSCode-server")
         SafePath = self.file_system.path
         try:
             os.killpg(self.settings.get("vscode_pid"), signal.SIGTERM)
         except Exception:
-            proc = subprocess.Popen('pkill -f "XXX"',
+            proc = subprocess.Popen('pkill -f "server.sh --host 0.0.0.0"' +
+                                    '  >/dev/null 2>/dev/null',
                                     cwd=SafePath,
                                     preexec_fn=os.setsid,
                                     shell=True)
             proc.wait()
-        self.settings["code_pid"] = None
+        self.settings["vscode_pid"] = None
         return True
 
     def start_vscode(self):
-        if self.settings.get("code_pid)") is None:
-            self.log.info("Starting code-server")
+        if self.settings.get("vscode_pid)") is None:
+            self.log.info("Starting openVSCode-server")
             SafePath = self.file_system.path
-            #port = ' --port ' + str(self.settings.get('portnum'))
-            port = ' --port 3000'
-            #auth = ' --connectionToken ' + self.settings.get('token')
-            auth = ' --connection-token 1234'
-
+            port = ' --port ' + str(self.settings.get('portnum'))
+            auth = ' --connection-token ' + self.settings.get('token')
             proc = subprocess.Popen(SafePath + '/openvscode-server/server.sh' +
                                     ' --host 0.0.0.0' +
                                     port +
-                                    auth,
+                                    auth +
+                                    ' >/dev/null 2>/dev/null ',
                                     cwd=SafePath,
                                     preexec_fn=os.setsid, shell=True)
             self.log.info('VSCode-server PID=' + str(proc.pid))
-            #url = 'http://' + os.uname().nodename + ':' + str(self.settings.get('portnum') + '?tkn=' +  + self.settings.get('token'))
+            url = 'http://' + os.uname().nodename + ':' + str(self.settings.get('portnum')) + '?tkn=' + self.settings.get('token')
+            self.log.info('To access VSCode go to ' + url)
             self.settings["vscode_pid"] = proc.pid
             return True
         else:
@@ -108,14 +108,15 @@ class OpenvscodeServer(MycroftSkill):
                     newdir = SafePath + '/' + 'openvscode-server'
                     os.rename(olddir, newdir)
                     os.remove(filename)
-            self.log.info("Installed OK")
+            self.log.info("OpenVSCode-server installed OK")
             self.settings['vscode_installed'] = True
-            #self.settings['vscode_version'] = data["name"]
+            self.settings['vscode_version'] = data["name"]
+            self.speak_dialog('installed_OK')
             return True
 
 
         except Exception:
-            self.log.info("VSCode is not installed - something went wrong!")
+            self.log.info("OpenVSCode-server is not installed - something went wrong!")
             self.settings['vscode_installed'] = False
             self.speak_dialog('installed_BAD')
             return False

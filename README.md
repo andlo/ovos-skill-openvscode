@@ -17,7 +17,7 @@ mycroft-msm install https://github.com/andlo/openvscode-server-skill.git
 Skill will then install openVScode-server. During installation it will download precompiled package and extract
 it. Machine platforms currently supportet is picroft.
 
-After installation, there should be a log info saying "Installed openVScode-server OK." and Mycroft should tell 
+After installation, there should be a log info saying "OpenVSCode-server installed OK" and Mycroft should tell 
 you by voice that he has installed the skill.
 You can then open a web-browser and go to http://device:3000 where device is the hostname of the device.
 If your Mycroft device is picroft the hostname proberly is picroft. 
