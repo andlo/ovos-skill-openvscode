@@ -99,9 +99,15 @@ class OpenvscodeServer(MycroftSkill):
             text = url.text
             data = json.loads(text)
             assets = data["assets"]
-
+            pf = platform.machine()
+            if pf == 'arm71':
+                pf = armhf
+            if pf == 'aarch64':
+                pf = 'arm64'
+            if pf == 'x86_64':
+                pf = 'x64'
             for asset in assets:
-                if 'armhf' in asset["name"]: 
+                if pf in asset["name"]: 
                     filename = SafePath + '/' + asset["name"]
                     r = requests.get(asset["browser_download_url"])
                     f = open(filename, "wb")

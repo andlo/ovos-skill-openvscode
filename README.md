@@ -15,7 +15,8 @@ The skill isnt yet in the mycroft market.
 mycroft-msm install https://github.com/andlo/openvscode-server-skill.git
 
 Skill will then install openVScode-server. During installation it will download precompiled package and extract
-it. Machine platforms currently supportet is picroft.
+it. 
+The skille is made for picroft, but should install work on any arm and x86 platform running linux 
 
 After installation, there should be a log info saying "OpenVSCode-server installed OK" and Mycroft should tell 
 you by voice that he has installed the skill.
