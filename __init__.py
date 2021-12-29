@@ -102,7 +102,7 @@ class OpenvscodeServer(MycroftSkill):
             assets = data["assets"]
             pf = platform.machine()
             if pf == 'arm71':
-                pf = armhf
+                pf = 'armhf'
             if pf == 'aarch64':
                 pf = 'arm64'
             if pf == 'x86_64':
