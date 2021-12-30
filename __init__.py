@@ -1,3 +1,21 @@
+"""
+skill OpenVSCode-server
+Copyright (C) 2022  Andreas Lorensen
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 from mycroft import MycroftSkill, intent_file_handler
 import requests, json
 import platform
@@ -77,13 +95,14 @@ class OpenvscodeServer(MycroftSkill):
             SafePath = self.file_system.path
             port = ' --port ' + str(self.settings.get('portnum'))
             auth = ' --connection-token ' + self.settings.get('token')
+            env = {**os.environ, 'PATH': '$HOME/bin:$HOME/mycroft-core/bin:' + os.environ['PATH']}
             proc = subprocess.Popen(SafePath + '/openvscode-server/server.sh' +
                                     ' --host 0.0.0.0' +
                                     port +
                                     auth +
                                     ' >/dev/null 2>/dev/null ',
                                     cwd=SafePath,
-                                    preexec_fn=os.setsid, shell=True, executable='/bin/bash')
+                                    preexec_fn=os.setsid, shell=True, executable='/bin/bash', env=env)
             self.log.info('VSCode-server PID=' + str(proc.pid))
             url = 'http://' + os.uname().nodename + ':' + str(self.settings.get('portnum')) + '?tkn=' + self.settings.get('token')
             self.log.info('To access VSCode go to ' + url)
