@@ -83,7 +83,6 @@ class OpenvscodeServer(MycroftSkill):
             proc = subprocess.Popen('pkill -f "server.sh --host 0.0.0.0"' +
                                     '  >/dev/null 2>/dev/null',
                                     cwd=SafePath,
-                                    preexec_fn=os.setsid,
                                     shell=True)
             proc.wait()
         self.settings["vscode_pid"] = None
@@ -93,17 +92,13 @@ class OpenvscodeServer(MycroftSkill):
         if self.settings.get("vscode_pid") is None:
             self.log.info("Starting openVSCode-server")
             SafePath = self.file_system.path
-            port = ' --port ' + str(self.settings.get('portnum'))
-            auth = ' --connection-token ' + self.settings.get('token')
-            env = {**os.environ, 'PATH': '$HOME/bin:$HOME/mycroft-core/bin:' + os.environ['PATH']}
-            proc = subprocess.Popen(SafePath + '/openvscode-server/server.sh' +
+            proc = subprocess.Popen(SafePath + '/openvscode-server/bin/openvscode-server' +
                                     ' --host 0.0.0.0' +
-                                    port +
-                                    auth +
+                                    ' --port ' + str(self.settings.get('portnum')) +
+                                    ' --connection-token ' + self.settings.get('token') +
                                     ' >/dev/null 2>/dev/null ',
                                     cwd=SafePath,
-                                    preexec_fn=os.setsid, shell=True, executable='/bin/bash', env=env)
-            self.log.info('VSCode-server PID=' + str(proc.pid))
+                                    preexec_fn=os.setsid, shell=True, executable='/bin/bash')
             url = 'http://' + os.uname().nodename + ':' + str(self.settings.get('portnum')) + '?tkn=' + self.settings.get('token')
             self.log.info('To access VSCode go to ' + url)
             self.settings["vscode_pid"] = proc.pid
