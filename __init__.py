@@ -1,6 +1,6 @@
 """
 skill OpenVSCode-server
-Copyright (C) 2022  Andreas Lorensen
+Copyright (C) 2024  Andreas Lorensen
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,8 +15,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+from ovos_bus_client.message import Message
+from ovos_workshop.decorators import intent_handler
+from ovos_workshop.intents import IntentBuilder
+from ovos_workshop.skills import OVOSSkill
 
-from mycroft import MycroftSkill, intent_file_handler
 import requests, json
 import platform
 import tarfile
@@ -26,10 +29,7 @@ import signal
 import shutil
 
 
-class OpenvscodeServer(MycroftSkill):
-    def __init__(self):
-        MycroftSkill.__init__(self)
-
+class OpenvscodeServer(OVOSSkill):
     def initialize(self):
         if (self.settings.get("auto_start") is not True):
             self.settings["auto_start"] = True
@@ -48,14 +48,14 @@ class OpenvscodeServer(MycroftSkill):
                 self.settings.get("vscode_pid") is None):
             self.start_vscode()
 
-    @intent_file_handler('stop.intent')
+    @intent_handler('stop.intent')
     def handle_vscode_stop(self, message):
         if self.stop_vscode():
             self.speak_dialog('vscode_stopped')
         else:
             self.speak_dialog('vscode_is_not_running')
 
-    @intent_file_handler('start.intent')
+    @intent_handler('start.intent')
     def handle_vscode_start(self, message):
         url = 'http://' + os.uname().nodename + ':' + str(self.settings.get('portnum')) + '?tkn=' + self.settings.get('token')
         if self.start_vscode():
@@ -63,13 +63,13 @@ class OpenvscodeServer(MycroftSkill):
         else:
             self.speak_dialog('vscode_already_running', data={"url": url})
 
-    @intent_file_handler('restart.intent')
+    @intent_handler('restart.intent')
     def handle_vscode_restart(self, message):
         url = 'http://' + os.uname().nodename + ':' + str(self.settings.get('portnum')) + '?tkn=' + self.settings.get('token')
         self.stop_vscode()
         self.start_vscode()
 
-    @intent_file_handler('update.intent')
+    @intent_handler('update.intent')
     def handle_vscode_update(self, message):
         self.speak_dialog('vscode_check_for_update')
         self.update_vscode()
@@ -181,7 +181,4 @@ class OpenvscodeServer(MycroftSkill):
             return True
         except Exception:
             return False
-
-def create_skill():
-    return OpenvscodeServer()
 
