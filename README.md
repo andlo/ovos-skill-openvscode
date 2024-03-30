@@ -32,7 +32,8 @@ There are some settings that kan be set in the skills settings under ~/.config/m
     "auto_start": true,
     "portnum": 3000,
     "token": "1234"
-}```
+}
+```
 
 On evry startup of the devie, the skill checks for new updates and if there is an update it will be updated. So 
 OpenVSCode should always be latest versrion. You can force an update check and update by saying "update VS code" 
